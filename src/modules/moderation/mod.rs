@@ -1,5 +1,17 @@
-//! this module performs basic moderation tasks
-//TODO: clean this garbage up
+//! # Moderation
+//!
+//! The moderation module has some basic filters to perform some common spam 
+//! clean up tasks. This module only has a single command used to turn the off
+//! as it operates under the assumption that the compile time configration is 
+//! correct.
+//!
+//!```
+//!$moderation on
+//!    (mod only) turns on moderation
+//!$moderation off
+//!    (mod only) turns off moderation
+//!```
+
 mod asciiart;
 mod misc;
 mod noflood;
@@ -16,9 +28,6 @@ use twitchchat::{
     Writer,
 };
 use webhook::Webhook;
-
-//TODO: make this the default
-//const LENGTHS: [i32; 8] = [0, 5, 60, 300, 600, 1200, 1800, -1];
 
 #[derive(Default, Clone)]
 pub struct FilterMsg {
@@ -136,8 +145,6 @@ impl Module for Moderation {
             .unwrap()
             .as_secs_f64();
 
-        // TODO: consider running this only once per tick in the event we fall
-        // really far behind
         while time > self.bans_ts {
             self.bans = self
                 .bans
@@ -170,7 +177,7 @@ impl Module for Moderation {
                     .unwrap();
                 self.kill_switch = false;
             }
-            //return;
+            return;
         }
 
         if self.kill_switch {

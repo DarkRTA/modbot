@@ -1,4 +1,20 @@
-//! Thanos snap point reward.
+//!# Thanos Snap
+//!
+//!**WARNING:** This module can and will ruin chat.
+//!
+//! The Thanos Snap module is a module to be used after the "Thanos Snap"
+//! channel point reward has been redeemed. To prevent abuse and accidental
+//! activations, 3 mods need to run the command in a short time period before it
+//! will go off.
+//!
+//!```
+//!$snap run
+//!    (mod only) After 3 different moderators run this, half of the people who
+//!    have spoken in chat in the past 15 minutes will get a 30 minute timeout.
+//!    $snap will be disabled afterward.
+//!$snap rearm
+//!    (bot/channel owner only) Rearms $snap after it has been disabled.
+//!```
 
 use super::Module;
 use crate::config;

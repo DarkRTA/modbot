@@ -1,3 +1,5 @@
+//! Really dumb filter that removes a majority of ascii art from chat.
+
 use super::{Filter, FilterMsg};
 use regex::Regex;
 

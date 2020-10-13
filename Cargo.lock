@@ -574,6 +574,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "modbot"
+version = "0.1.0"
+dependencies = [
+ "env_logger",
+ "log",
+ "rand",
+ "regex",
+ "tokio",
+ "twitchchat",
+ "webhook",
+]
+
+[[package]]
 name = "native-tls"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -915,19 +928,6 @@ dependencies = [
  "itoa",
  "serde",
  "url",
-]
-
-[[package]]
-name = "shiftah"
-version = "0.1.0"
-dependencies = [
- "env_logger",
- "log",
- "rand",
- "regex",
- "tokio",
- "twitchchat",
- "webhook",
 ]
 
 [[package]]

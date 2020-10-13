@@ -1,4 +1,5 @@
-//! misc regex that doesnt fit in any other module
+//! Miscellaneous regex that doesn't really fit anywhere else.
+
 use super::{Filter, FilterMsg};
 use regex::Regex;
 

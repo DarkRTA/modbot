@@ -1,4 +1,4 @@
-//! Simple module that prints out chat messsages
+//! Basic module for logging sent chat messages.
 
 use super::Module;
 use twitchchat::{messages::Privmsg, Writer};

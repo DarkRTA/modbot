@@ -1,4 +1,4 @@
-//! shift chat easter egg. randomly says "shiftAh"
+//! SHiFT chat easter egg. Randomly says "shiftAh" in chat.
 
 use super::Module;
 use twitchchat::{commands::privmsg, messages::Privmsg, Writer};
