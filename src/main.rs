@@ -35,16 +35,8 @@ async fn main_loop(
     mut modules: &mut Vec<Box<dyn Module>>,
 ) -> Result<(), Box<dyn Error>> {
     info!("connected...");
-    loop {
-        match runner.next_message().await? {
-            Status::Message(msg) => handle_message(msg, runner.writer(), &mut modules)?,
-            Status::Quit => {
-                break;
-            }
-            Status::Eof => {
-                break;
-            }
-        }
+    while let Status::Message(msg) = runner.next_message().await? {
+        handle_message(msg, runner.writer(), &mut modules)?;
     }
 
     Ok(())
@@ -58,7 +50,7 @@ fn handle_message(
     for module in modules {
         module.tick(writer.clone());
         match msg {
-            Commands::Privmsg(ref msg) => module.privmsg(&msg, writer.clone()),
+            Commands::Privmsg(ref msg) => module.privmsg(msg, writer.clone()),
             _ => (),
         }
     }

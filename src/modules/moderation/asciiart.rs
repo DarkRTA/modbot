@@ -6,8 +6,8 @@ use regex::Regex;
 pub struct AsciiArt;
 
 impl AsciiArt {
-    pub fn new() -> AsciiArt {
-        AsciiArt
+    pub fn new() -> Self {
+        Self
     }
 }
 

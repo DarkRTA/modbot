@@ -6,8 +6,8 @@ use twitchchat::{commands::privmsg, messages::Privmsg, Writer};
 pub struct ShiftAh;
 
 impl ShiftAh {
-    pub fn new() -> ShiftAh {
-        ShiftAh
+    pub fn new() -> Self {
+        Self
     }
 }
 

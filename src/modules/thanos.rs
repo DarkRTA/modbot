@@ -37,12 +37,12 @@ pub struct Thanos {
 }
 
 impl Thanos {
-    pub fn new() -> Thanos {
+    pub fn new() -> Self {
         let time = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs_f64();
-        Thanos {
+        Self {
             chatters: HashMap::new(),
             keys: HashSet::new(),
             enabled: true,

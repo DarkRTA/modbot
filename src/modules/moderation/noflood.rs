@@ -13,8 +13,8 @@ pub struct NoFlood {
 }
 
 impl NoFlood {
-    pub fn new() -> NoFlood {
-        NoFlood { log: Vec::new() }
+    pub fn new() -> Self {
+        Self { log: Vec::new() }
     }
 
     fn pushuser(&mut self, msg: &FilterMsg) {

@@ -6,8 +6,8 @@ use regex::Regex;
 pub struct Misc;
 
 impl Misc {
-    pub fn new() -> Misc {
-        Misc
+    pub fn new() -> Self {
+        Self
     }
 }
 

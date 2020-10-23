@@ -6,8 +6,8 @@ use twitchchat::{messages::Privmsg, Writer};
 pub struct Chat;
 
 impl Chat {
-    pub fn new() -> Chat {
-        Chat
+    pub fn new() -> Self {
+        Self
     }
 }
 

@@ -63,7 +63,7 @@ pub struct Moderation {
 }
 
 impl Moderation {
-    pub fn new(config: ModerationConfig) -> Moderation {
+    pub fn new(config: ModerationConfig) -> Self {
         let mut filters: Vec<Box<dyn Filter>> = Vec::new();
         if config.noflood {
             filters.push(Box::new(noflood::NoFlood::new()))
@@ -80,7 +80,7 @@ impl Moderation {
             .unwrap()
             .as_secs_f64();
 
-        Moderation {
+        Self {
             bans_ts: time,
             antibot_ts: time,
             lengths: config.lengths,
