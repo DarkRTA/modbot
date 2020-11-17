@@ -1,8 +1,8 @@
 //! # Moderation
 //!
-//! The moderation module has some basic filters to perform some common spam 
+//! The moderation module has some basic filters to perform some common spam
 //! clean up tasks. This module only has a single command used to turn the off
-//! as it operates under the assumption that the compile time configration is 
+//! as it operates under the assumption that the compile time configration is
 //! correct.
 //!
 //!```
@@ -93,15 +93,22 @@ impl Moderation {
     }
 
     fn run_filters(&mut self, msg: &Privmsg) -> Option<(i32, &'static str)> {
+        let time = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs_f64();
+
+        let ts = msg.tmi_sent_ts()? as f64 / 1000.0;
+        // make sure our clock isn't too far out of sync with
+        // what twitch sends us
+        assert!((ts - time).abs() < 30.0);
+
         let msg = FilterMsg {
             nick: msg.name().into(),
             text: msg.data().into(),
             vip: msg.is_vip(),
             sub: msg.is_subscriber(),
-            ts: SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .unwrap()
-                .as_secs_f64(),
+            ts,
         };
 
         for filter in &mut self.filters {

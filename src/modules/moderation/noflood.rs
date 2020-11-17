@@ -1,5 +1,5 @@
 //! This module attempts to prevent anyone from flodding chat. This can be very
-//! effective when paired with the anit-bot feature to clean up really fast 
+//! effective when paired with the anit-bot feature to clean up really fast
 //! bot spam.
 use super::{Filter, FilterMsg};
 
