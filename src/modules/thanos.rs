@@ -71,7 +71,7 @@ impl Thanos {
     fn cmd_handler(&mut self, msg: &Privmsg, args: Vec<String>, mut writer: Writer) {
         if args.len() >= 2
             && args[1] == "rearm"
-            && (msg.is_broadcaster() || msg.data() == config::OWNER)
+            && (msg.is_broadcaster() || msg.name() == config::OWNER)
         {
             writer
                 .encode_sync(privmsg(msg.channel(), "$snap rearmed"))
