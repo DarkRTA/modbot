@@ -24,14 +24,14 @@ impl NoFlood {
             .log
             .clone()
             .into_iter()
-            .filter(|x| !(x.vip || x.ts < msg.ts - FLOOD_TIME))
+            .filter(|x| !(x.vip || x.sub || x.ts < msg.ts - FLOOD_TIME))
             .collect()
     }
 }
 
 impl Filter for NoFlood {
     fn filter(&mut self, msg: &FilterMsg) -> Option<(i32, &'static str)> {
-        if msg.vip {
+        if msg.vip || msg.sub {
             return None;
         }
 
@@ -149,6 +149,23 @@ mod test {
                 nick: "a".into(),
                 text: "h".to_string().repeat(FLOOD_LEN),
                 vip: true,
+                ts: FLOOD_TIME - 0.01,
+                ..Default::default()
+            })
+        );
+    }
+    #[test]
+    fn exclude_subscribers() {
+        let mut filter = NoFlood::new();
+        for i in 0..(FLOOD_COUNT - 1) {
+            filter.filter(&msg("a", &format!("hey shift! {}", i), 0.0));
+        }
+        assert_eq!(
+            None,
+            filter.filter(&FilterMsg {
+                nick: "a".into(),
+                text: "h".to_string().repeat(FLOOD_LEN),
+                sub: true,
                 ts: FLOOD_TIME - 0.01,
                 ..Default::default()
             })
