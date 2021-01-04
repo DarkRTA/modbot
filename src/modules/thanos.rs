@@ -69,10 +69,7 @@ impl Thanos {
     }
 
     fn cmd_handler(&mut self, msg: &Privmsg, args: Vec<String>, mut writer: Writer) {
-        if args.len() >= 2
-            && args[1] == "rearm"
-            && (msg.is_broadcaster() || msg.name() == config::OWNER)
-        {
+        if args.len() >= 2 && args[1] == "rearm" {
             writer
                 .encode_sync(privmsg(msg.channel(), "$snap rearmed"))
                 .unwrap();
@@ -97,7 +94,7 @@ impl Thanos {
             self.keys.insert(msg.name().into());
             //self.keys.insert(rand::random::<i32>().to_string());
 
-            if self.keys.len() >= 3 {
+            if self.keys.len() >= 2 {
                 for i in self.keys.iter() {
                     info!("snap activated by {}", i);
                 }
@@ -139,7 +136,7 @@ impl Module for Thanos {
         }
         while time > self.key_ts {
             self.keys.clear();
-            self.key_ts += 900.0;
+            self.key_ts += 60.0;
         }
     }
     fn privmsg(&mut self, msg: &Privmsg, writer: Writer) {
