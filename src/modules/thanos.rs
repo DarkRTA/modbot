@@ -19,7 +19,7 @@
 use super::Module;
 use crate::config;
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashMap,
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 use twitchchat::{
@@ -28,12 +28,17 @@ use twitchchat::{
     Writer,
 };
 
+#[derive(PartialEq)]
+enum ThanosState {
+    Idle,
+    Ready,
+    Disabled,
+}
+
 pub struct Thanos {
     chatters: HashMap<String, f64>,
-    keys: HashSet<String>,
-    enabled: bool,
+    state: ThanosState,
     cleanup_ts: f64,
-    key_ts: f64,
 }
 
 impl Thanos {
@@ -44,10 +49,8 @@ impl Thanos {
             .as_secs_f64();
         Self {
             chatters: HashMap::new(),
-            keys: HashSet::new(),
-            enabled: true,
+            state: ThanosState::Idle,
             cleanup_ts: time + 900.0,
-            key_ts: time + 60.0,
         }
     }
 
@@ -74,46 +77,37 @@ impl Thanos {
                 .encode_sync(privmsg(msg.channel(), "$snap rearmed"))
                 .unwrap();
             info!("snap rearmed");
-            self.enabled = true;
-            self.keys.clear();
+            self.state = ThanosState::Idle;
             return;
         }
 
-        if !self.enabled {
+        if self.state == ThanosState::Disabled {
             writer
                 .encode_sync(privmsg(
                     msg.channel(),
-                    "$snap currently disabled. shift or dark should rearm it with $snap rearm",
+                    "$snap currently disabled. it should be rearmed with $snap rearm",
                 ))
                 .unwrap();
             info!("snap disabled");
             return;
         }
 
-        if args.len() >= 2 && args[1] == "run" {
-            self.keys.insert(msg.name().into());
-            //self.keys.insert(rand::random::<i32>().to_string());
-
-            if self.keys.len() >= 2 {
-                for i in self.keys.iter() {
-                    info!("snap activated by {}", i);
-                }
-                writer
-                    .encode_sync(privmsg(msg.channel(), "*snap*"))
-                    .unwrap();
-
-                self.do_snap(writer);
-                self.enabled = false;
-            } else {
-                info!("key turned by {}", msg.name());
-                writer
-                    .encode_sync(privmsg(msg.channel(), "key turned"))
-                    .unwrap();
-            }
-        } else {
+        if args.len() >= 2 && args[1] == "prepare" {
+            self.state = ThanosState::Ready;
+            info!("$snap prepared by {}", msg.name());
             writer
-                .encode_sync(privmsg(msg.channel(), "invalid usage"))
+                .encode_sync(privmsg(msg.channel(), "$snap ready"))
                 .unwrap();
+        }
+
+        if args.len() >= 2 && args[1] == "run" && self.state == ThanosState::Ready {
+            info!("$snap ran by {}", msg.name());
+            writer
+                .encode_sync(privmsg(msg.channel(), "*snap*"))
+                .unwrap();
+
+            self.do_snap(writer);
+            self.state = ThanosState::Disabled;
         }
     }
 }
@@ -132,11 +126,12 @@ impl Module for Thanos {
                 .filter(|(_, v)| *v > &(time - 900.0))
                 .map(|(k, v)| (k.clone(), *v))
                 .collect();
+
+            if self.state != ThanosState::Disabled {
+                self.state = ThanosState::Idle;
+            }
+
             self.cleanup_ts += 900.0;
-        }
-        while time > self.key_ts {
-            self.keys.clear();
-            self.key_ts += 60.0;
         }
     }
     fn privmsg(&mut self, msg: &Privmsg, writer: Writer) {
