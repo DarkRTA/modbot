@@ -22,7 +22,7 @@ impl Filter for AsciiArt {
 
         let ascii_chars: usize = re.find_iter(&msg.text).count();
 
-        if ascii_chars as f32 / msg.text.len() as f32 <= 0.1 {
+        if ascii_chars as f32 / msg.text.len() as f32 <= 0.08 {
             return Some((1, "possible ascii art"));
         }
         None
@@ -67,9 +67,7 @@ mod test {
     }
     #[test]
     fn truck() {
-        let msg = msg(r"
-──────▄▌▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌ ───▄▄ █ shiftdab this is the dab truck ███████▌█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌ ▀(@)▀▀▀▀▀▀▀(@)(@)▀▀▀▀▀▀▀▀▀▀▀▀▀(@)▀
-        ");
+        let msg = msg(r"──────▄▌▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌ ───▄▄ █ KKona WATCH OUT I'M TRUCKIN ███████▌█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌ ▀(@)▀▀▀▀▀▀▀(@)(@)▀▀▀▀▀▀▀▀▀▀▀▀▀(@)▀");
         let mut filter = AsciiArt::new();
         assert_eq!(None, filter.filter(&msg));
     }
