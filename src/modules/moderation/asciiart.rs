@@ -15,14 +15,15 @@ impl Filter for AsciiArt {
     fn filter(&mut self, msg: &FilterMsg) -> Option<(i32, &'static str)> {
         //TODO: lazy compile this regex
         let re = Regex::new(r"[a-zA-Z0-9 \.\?!]").unwrap();
+        let len = msg.text.chars().count();
         // allow small ascii art
-        if msg.text.len() <= 175 {
+        if len <= 175 {
             return None;
         };
 
         let ascii_chars: usize = re.find_iter(&msg.text).count();
 
-        if ascii_chars as f32 / msg.text.len() as f32 <= 0.08 {
+        if ascii_chars as f32 / len as f32 <= 0.1 {
             return Some((1, "possible ascii art"));
         }
         None
